@@ -24,3 +24,4 @@ class CasinoGame:
         player.change_balance(-bet)
 
         return True, "Bet accepted"
+ 

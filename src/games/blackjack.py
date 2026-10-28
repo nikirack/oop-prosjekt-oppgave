@@ -1,5 +1,5 @@
 from player import Player
-from games.base import CasinoGame
+from games.shared.base import CasinoGame
 
 class Blackjack(CasinoGame):
     def __init__(self) -> None:

@@ -1,6 +1,6 @@
 import random
 
-from games.base import CasinoGame
+from games.shared.base import CasinoGame
 from player import Player
 
 
