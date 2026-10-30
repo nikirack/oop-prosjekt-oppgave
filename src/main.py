@@ -1,11 +1,26 @@
-import games
+from games import Dice
 from player import Player
+from casino import Casino, Startup
+from storage import PlayerStorage
 
+def main() -> None:
 
-nikolai = Player("Nikolai")
+    storage = PlayerStorage("data/player.json")
 
-dice = games.Dice(6)
+    startup = Startup()
 
-print(dice.play(nikolai, bet=1000))
+    player: Player = startup.select_player(storage)
+    storage.update_and_save(player.to_dict())
 
-nikolai.show_balance()
+    casino = Casino(
+        storage=storage,
+        player=player,
+        games=[
+            Dice(6),
+        ]
+    )
+
+    casino.run()
+
+if __name__ == "__main__":
+    main()
