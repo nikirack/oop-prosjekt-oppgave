@@ -1,7 +1,7 @@
 import random
 
-from games.shared.base import CasinoGame
-from player import Player
+from games.shared.base import CasinoGame, GameResult
+from ui import prompt_int
 
 
 class Dice(CasinoGame):
@@ -10,30 +10,19 @@ class Dice(CasinoGame):
         self.sides: int = sides
         self.multiplier = 2
 
-    def play(self, player:Player, bet:int) -> tuple[bool, str]:
-        success, status = super().play(player, bet)
-
-        if not success:
-            return False, status
-
+    def play(self, bet: int) -> GameResult:
         while True:
-            try:
-                user_side = int(
-                    input(f"Choose a side from 1 to {self.sides}: ")
-                )
+            user_side: int = prompt_int(f"Choose a side from 1 to {self.sides}: ")
 
-                if 1 <= user_side <= self.sides:
-                    break
+            if 1 <= user_side <= self.sides:
+                break
 
-                print(f"Please choose a number between 1 and {self.sides}.")
+            print(f"Please choose a number between 1 and {self.sides}.")
 
-            except ValueError:
-                print("Invalid input. Please enter a whole number.")
 
         number: int = random.randint(1, self.sides)
 
         if number == user_side:
-            player.change_balance(bet * self.multiplier)
-            return True, "Player won"
+            return GameResult(True, bet*self.multiplier, f"You won {bet*self.multiplier} credits!")
         
-        return True, "Player lost"
+        return GameResult(False, 0, "You lost.")

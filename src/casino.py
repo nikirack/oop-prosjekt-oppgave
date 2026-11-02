@@ -1,52 +1,51 @@
 from player import Player, PlayerDict
-from games.shared.base import CasinoGame
+from games.shared.base import CasinoGame, GameResult
 from storage import PlayerStorage
+from ui import clear, choose, prompt_int
 
 import time
-import subprocess
-import platform
 
-class Startup:
-    def __init__(self) -> None:
-        pass
+def _load_players(storage: PlayerStorage) -> Player:
+    players: dict[str, PlayerDict] = storage.data
+    players_numbered: dict[str, Player] = {}
 
-    def _load_players(self, storage: PlayerStorage):
-        players: dict[str, PlayerDict] = storage.data
-        players_numbered: dict[str, Player] = {}
+    alternatives: set[str] = set()
 
-        print("Select a player to use")
+    print("Select a player to use")
 
-        for i, [uuid, player] in enumerate(players.items(), 1):
-            player_class: Player = Player.from_dict(uuid, player)
 
-            players_numbered[str(i)] = player_class
-            print(f"{i}. {player_class.name} (Balance: {player_class.balance})")
+    for i, [uuid, player] in enumerate(players.items(), 1):
+        player_class: Player = Player.from_dict(uuid, player)
 
-        while True:
-            choice: str = input("Choose: ")
+        players_numbered[str(i)] = player_class
+        print(f"{i}. {player_class.name} (Balance: {player_class.balance})")
+        alternatives.add(str(i))
+        
+    choice: str = choose(alternatives)
 
-            try:
-                return_player: Player = players_numbered[choice]
-                return return_player
-            except KeyError:
-                print("You need to choose a player")
+    return players_numbered[choice]
 
-    def select_player(self, storage: PlayerStorage) -> Player:
-        print("Select player")
-        print("1. New player")
+
+def select_player(storage: PlayerStorage) -> Player:
+    print("Select player")
+    print("1. New player")
+
+    alternatives: set[str] = {"1"}
+
+    if bool(storage.load()):
         print("2. Load player")
+        alternatives.add("2")
 
-        while True:
-            choice = input("Choose: ")
+    choice: str = choose(alternatives)
 
-            match choice:
-                case "1":
-                    return Player(name = input("Name: "))
-                case "2":
-                    return self._load_players(storage)
-                case _:
-                    print("Select a valid choice")
-                
+
+    match choice:
+        case "1":
+            return Player(name = input("Name: "))
+        case "2":
+            return _load_players(storage)
+        case _:
+            raise ValueError(f"Unexpected choice: {choice}") 
 
 
 class Casino:
@@ -62,66 +61,72 @@ class Casino:
             self.games_numbered[str(i)] = game
 
 
-    def clear(self) -> None:
-        subprocess.run(
-            ["cls"] if platform.system() == "Windows" else ["clear"],
-            check=False,
-            shell=True
-        )
 
-    def play_game(self, game: CasinoGame):
+    def play_game(self, game: CasinoGame) -> None:
+        clear()
         print(f"Current balance: {self.player.balance}")
         print(f"Min bet is {game.min_bet}, write 0 to exit")
-        while True:
-            try:
-                bet = int(input("Bet: "))
+
+        bet: int = prompt_int("Bet: ")
+
+        while bet != 0:
+            if bet < game.min_bet:
+                print(f"Minimum bet is {game.min_bet}.")
+                bet = prompt_int("Bet: ")
+            elif not self.player.has_amount(bet):
+                print("You don't have enough credits.")
+                bet = prompt_int("Bet: ")
+            else:
                 break
-            except ValueError:
-                print("Bet needs to be a number")
+
 
         if bet == 0:
             return
+        
+        self.player.change_balance(-bet)
 
-        self.clear()
-
+        clear()
         print(f"---{game.name.upper()}---")
         print(f"Current bet is {bet}")
 
-        _status, message = game.play(self.player, bet)
+        result: GameResult = game.play(bet)
+        self.player.change_balance(result.payout)
 
-        print(message)
+        print(result.message)
+        print(f"{self.player.name} now has {self.player.balance} credits.")
+
         self.storage.update_and_save(self.player.to_dict())
         time.sleep(self.sleep_time)
 
 
-    def select_game(self):
-        self.clear()
+    def select_game(self) -> None:
+        clear()
         print("---GAMES---")
+
+        alternatives: set[str] = {"0"}
 
         for num, game in self.games_numbered.items():
             print(f"{num}. {game.name}")
+            alternatives.add(num)
+            
 
         print("0. Back")
 
-        try:
-            choice = input("choose: ")
+        
+        choice: str = choose(alternatives)
 
-            if choice == "0":
-                return
+        if choice == "0":
+            return
 
-            game: CasinoGame = self.games_numbered[choice]
+        game: CasinoGame = self.games_numbered[choice]
 
-            self.play_game(game)
-
-        except KeyError:
-            print("You need to choose a game")
-            time.sleep(self.sleep_time)
+        self.play_game(game)
 
             
 
     def run(self) -> None:
         while True:
-            self.clear()
+            clear()
             print("---CASINO---")
 
             self.player.show_balance()
@@ -131,7 +136,7 @@ class Casino:
 
             print("0. Exit")
 
-            choice = input("choose: ")
+            choice: str = choose({"1","0"})
 
             match choice:
                 case "0":
@@ -140,10 +145,8 @@ class Casino:
                     return
                 case "1":
                     self.select_game()
-
                 case _:
-                    print("\nNot a choice")
-                    time.sleep(self.sleep_time)
+                    pass
                     
 
 # if __name__ == "__main__":

@@ -1,15 +1,14 @@
 from games import Dice
 from player import Player
-from casino import Casino, Startup
+from casino import Casino, select_player
 from storage import PlayerStorage
 
 def main() -> None:
 
     storage = PlayerStorage("data/player.json")
 
-    startup = Startup()
+    player: Player = select_player(storage)
 
-    player: Player = startup.select_player(storage)
     storage.update_and_save(player.to_dict())
 
     casino = Casino(
