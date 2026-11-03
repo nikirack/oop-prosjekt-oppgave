@@ -1,8 +1,8 @@
 import random
 
 from games.shared.base import CasinoGame, GameResult
-from ui import prompt_int
 
+from rich.prompt import IntPrompt
 
 class Dice(CasinoGame):
     def __init__(self, sides:int) -> None:
@@ -11,13 +11,12 @@ class Dice(CasinoGame):
         self.multiplier = 2
 
     def play(self, bet: int) -> GameResult:
-        while True:
-            user_side: int = prompt_int(f"Choose a side from 1 to {self.sides}: ")
 
-            if 1 <= user_side <= self.sides:
-                break
-
-            print(f"Please choose a number between 1 and {self.sides}.")
+        user_side: int = IntPrompt.ask(
+            f"Choose a side from 1 to {self.sides}", 
+            choices=[str(i) for i in range(1, self.sides+1)],
+            show_choices=False
+        )
 
 
         number: int = random.randint(1, self.sides)
