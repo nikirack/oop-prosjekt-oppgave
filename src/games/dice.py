@@ -11,6 +11,7 @@ class Dice(CasinoGame):
         self.multiplier = 2
 
     def play(self, bet: int) -> GameResult:
+        super()._show_title(bet)
 
         user_side: int = IntPrompt.ask(
             f"Choose a side from 1 to {self.sides}", 

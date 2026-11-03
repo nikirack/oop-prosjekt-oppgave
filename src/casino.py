@@ -109,9 +109,6 @@ class Casino:
         self.player.change_balance(-bet)
 
         clear()
-        console.print(Panel(Align.center(game.name.upper())))
-        console.print(f"Current bet is {bet}")
-        console.print()
 
         result: GameResult = game.play(bet)
         self.player.change_balance(result.payout)
@@ -120,7 +117,7 @@ class Casino:
         console.print(f"{self.player.name} now has {self.player.balance} credits.")
 
         self.storage.update_and_save(self.player.to_dict())
-        time.sleep(self.sleep_time)
+        Prompt.ask("Press enter to continue")
 
 
     def select_game(self) -> None:
@@ -139,7 +136,10 @@ class Casino:
         console.print("0. Back")
 
         
-        choice: str = Prompt.ask(choices=alternatives)
+        choice: str = Prompt.ask(
+            choices=alternatives,
+            show_choices=False
+        )
 
         if choice == "0":
             return
@@ -163,7 +163,10 @@ class Casino:
 
             console.print("0. Exit")
 
-            choice: str = Prompt.ask(choices=["1","0"])
+            choice: str = Prompt.ask(
+                choices=["1","0"],
+                show_choices=False
+            )
 
             match choice:
                 case "0":
