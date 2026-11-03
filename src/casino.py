@@ -8,8 +8,6 @@ from rich.panel import Panel
 from rich.align import Align
 from rich.prompt import Prompt, IntPrompt
 
-import time
-
 def _load_players(storage: PlayerStorage) -> Player:
 
     clear()
@@ -75,8 +73,6 @@ class Casino:
         self.storage: PlayerStorage = storage
         self.player: Player = player
         self.games: list[CasinoGame] = games
-        
-        self.sleep_time = 1.5
 
         self.games_numbered: dict[str, CasinoGame] = {}
         for i, game in enumerate(self.games, 1):
