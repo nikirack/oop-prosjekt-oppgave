@@ -1,9 +1,8 @@
 from typing import TypedDict
-from ui import console
-
 
 import uuid
 
+from ui import show_player_balance
 
 class PlayerDict(TypedDict):
     name: str
@@ -20,7 +19,7 @@ class Player:
         self.balance += amount
 
     def show_balance(self) -> None:
-        console.print(f"{self.name} has {self.balance} credits.")
+        show_player_balance(self)
 
     def has_amount(self, amount:int) -> bool:
         return self.balance >= amount

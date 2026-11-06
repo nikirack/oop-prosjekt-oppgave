@@ -1,12 +1,8 @@
 from player import Player, PlayerDict
 from games.shared.base import CasinoGame, GameResult
 from storage import PlayerStorage
-from ui import clear, console
+from ui import clear, Menu, COLORS, fmt_credits, ask_int, info, print_result, titlecard, blank
 
-from rich.table import Table
-from rich.panel import Panel
-from rich.align import Align
-from rich.prompt import Prompt, IntPrompt
 
 def _load_players(storage: PlayerStorage) -> Player:
 
@@ -15,29 +11,21 @@ def _load_players(storage: PlayerStorage) -> Player:
     players: dict[str, PlayerDict] = storage.data
     players_numbered: dict[str, Player] = {}
 
-    alternatives: list[str] = []
+    alternatives: dict[int, str] = {}
 
-    table = Table()
 
-    table.add_column("Number")
-    table.add_column("Name")
-    table.add_column("Balance")
+    for i, [uuid, player_dict] in enumerate(players.items(), 1):
+        player: Player = Player.from_dict(uuid, player_dict)
 
-    for i, [uuid, player] in enumerate(players.items(), 1):
-        player_class: Player = Player.from_dict(uuid, player)
+        players_numbered[str(i)] = player
+        alternatives[i] = f"{player.name} [{COLORS['muted']}]{fmt_credits(player.balance)}[/]"
 
-        players_numbered[str(i)] = player_class
-        table.add_row(str(i), player_class.name, str(player_class.balance))
-
-        alternatives.append(str(i))
-
-    console.print(table)
-     
-    choice: str = Prompt.ask(
-        "Select a player to use",
-        choices=alternatives, 
-        show_choices=False
+    menu = Menu(
+        title="Select a player to use",
+        options=alternatives
     )
+     
+    choice: str = menu.ask()
 
     return players_numbered[choice]
 
@@ -45,23 +33,21 @@ def _load_players(storage: PlayerStorage) -> Player:
 def select_player(storage: PlayerStorage) -> Player:
     clear()
 
-    console.print("Select player")
-    console.print("1. New player")
-
-    alternatives: list[str] = ["1"]
+    alternatives: dict[int, str] = {1:"New player"}
 
     if bool(storage.load()):
-        console.print("2. Load player")
-        alternatives.append("2")
+        alternatives[2] = "Load player"
 
-    choice: str = Prompt.ask(
-        choices=alternatives
+    menu = Menu(
+        title="Select player",
+        options=alternatives,
     )
 
+    choice: str = menu.ask()
 
     match choice:
         case "1":
-            return Player(name = Prompt.ask("Name"))
+            return Player(name = input("Name: "))
         case "2":
             return _load_players(storage)
         case _:
@@ -74,9 +60,9 @@ class Casino:
         self.player: Player = player
         self.games: list[CasinoGame] = games
 
-        self.games_numbered: dict[str, CasinoGame] = {}
+        self.games_numbered: dict[int, CasinoGame] = {}
         for i, game in enumerate(self.games, 1):
-            self.games_numbered[str(i)] = game
+            self.games_numbered[i] = game
 
 
 
@@ -84,17 +70,17 @@ class Casino:
         clear()
 
         self.player.show_balance()
-        console.print(f"Min bet is {game.min_bet}, write 0 to exit")
+        info(f"Min bet is {game.min_bet}, write 0 to exit")
 
-        bet: int = IntPrompt.ask("Bet")
+        bet: int = ask_int("Bet")
 
         while bet != 0:
             if bet < game.min_bet:
-                console.print(f"Minimum bet is {game.min_bet}.")
-                bet = IntPrompt.ask("Bet")
+                info(f"Minimum bet is {game.min_bet}.")
+                bet = ask_int("Bet")
             elif not self.player.has_amount(bet):
-                console.print("You don't have enough credits.")
-                bet = IntPrompt.ask("Bet")
+                info("You don't have enough credits.")
+                bet = ask_int("Bet")
             else:
                 break
 
@@ -109,38 +95,37 @@ class Casino:
         result: GameResult = game.play(bet)
         self.player.change_balance(result.payout)
 
-        console.print(result.message)
-        console.print(f"{self.player.name} now has {self.player.balance} credits.")
+        print_result(result)
+        info(f"{self.player.name} now has {fmt_credits(self.player.balance)}.")
 
         self.storage.update_and_save(self.player.to_dict())
-        Prompt.ask("Press enter to continue")
+        input("Press enter to continue")
 
 
     def select_game(self) -> None:
         clear()
 
-        console.print(Panel(Align.center("GAMES")))
-        console.print()
+        titlecard("GAMES")
+        blank()
 
-        alternatives: list[str] = ["0"]
+        alternatives: dict[int, str] = {}
 
         for num, game in self.games_numbered.items():
-            console.print(f"{num}. {game.name}")
-            alternatives.append(num)
+            alternatives[num] = game.name
             
 
-        console.print("0. Back")
+        menu = Menu(
+            title = "Select a game",
+            options=alternatives
+        )
 
         
-        choice: str = Prompt.ask(
-            choices=alternatives,
-            show_choices=False
-        )
+        choice: str = menu.ask()
 
         if choice == "0":
             return
 
-        game: CasinoGame = self.games_numbered[choice]
+        game: CasinoGame = self.games_numbered[int(choice)]
 
         self.play_game(game)
 
@@ -150,23 +135,24 @@ class Casino:
         while True:
             clear()
 
-            console.print(Panel(Align.center("CASINO")))
+            titlecard("CASINO")
 
             self.player.show_balance()
-            console.print()
+            blank()
 
-            console.print("1. Play")
-
-            console.print("0. Exit")
-
-            choice: str = Prompt.ask(
-                choices=["1","0"],
-                show_choices=False
+            menu = Menu(
+                title="Select an option",
+                options={
+                    1: "Play"
+                },
+                footer="Exit"
             )
+
+            choice: str = menu.ask()
 
             match choice:
                 case "0":
-                    console.print("Bye")
+                    info("Bye")
                     clear()
                     self.storage.update_and_save(self.player.to_dict())
                     return

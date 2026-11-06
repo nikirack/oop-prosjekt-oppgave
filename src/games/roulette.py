@@ -1,9 +1,8 @@
 from games.shared.base import CasinoGame, GameResult
-# from ui import console
 
 import random
 
-from rich.prompt import Prompt
+from ui import ask_choice
 
 class Roulette(CasinoGame):
     def __init__(self) -> None:
@@ -15,10 +14,10 @@ class Roulette(CasinoGame):
     def play(self, bet: int) -> GameResult:
         super()._show_title(bet)
 
-        ball = random.choice(self.alternatives)
-        user_guess = Prompt.ask(
+        ball: str = random.choice(self.alternatives)
+        user_guess: str = ask_choice(
             "Place your bet",
-            choices=self.alternatives
+            choices=self.alternatives,
         )
 
         if ball == user_guess:

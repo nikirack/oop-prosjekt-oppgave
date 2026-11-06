@@ -1,9 +1,6 @@
 from dataclasses import dataclass
 
-from rich.panel import Panel
-from rich.align import Align
-
-from ui import console
+from ui import titlecard, info
 
 @dataclass
 class GameResult:
@@ -18,8 +15,8 @@ class CasinoGame:
         self.min_bet: int = min_bet
 
     def _show_title(self, bet: int) -> None:
-        console.print(Panel(Align.center(self.name.upper())))
-        console.print(f"Current bet is {bet}")
+        titlecard(self.name)
+        info(f"Current bet is {bet}")
 
     def play(self, bet: int) -> GameResult:
         raise NotImplementedError
