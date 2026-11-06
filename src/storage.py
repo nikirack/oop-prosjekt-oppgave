@@ -3,6 +3,8 @@ from player import PlayerDict
 import json
 from pathlib import Path
 
+from ui import info
+
 
 class PlayerStorage:
     def __init__(self, file: str | Path) -> None:
@@ -15,8 +17,14 @@ class PlayerStorage:
         self.data: dict[str, PlayerDict] = self.load()
 
     def load(self) -> dict[str, PlayerDict]:
-        with self.file.open("r", encoding="utf-8") as f:
-            return json.load(f)
+        try:
+            with self.file.open("r", encoding="utf-8") as f:
+                return json.load(f)
+        except (json.decoder.JSONDecodeError) as e:
+            info(f"Could not load player data ({e}), starting fresh.")
+            info("File will be overwritten if you make a new player")
+            return {}
+
 
     def update(self, data: dict[str, PlayerDict]) -> None:
         self.data.update(data)
