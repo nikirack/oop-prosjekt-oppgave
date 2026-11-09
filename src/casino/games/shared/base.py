@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from ui import titlecard, info
+from casino.ui import titlecard, info
 
 @dataclass
 class GameResult:

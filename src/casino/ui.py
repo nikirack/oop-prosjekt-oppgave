@@ -10,8 +10,8 @@ from rich.text import Text
 
 
 if TYPE_CHECKING:
-    from player import Player
-    from games.shared.base import GameResult
+    from casino.player import Player
+    from casino.games.shared.base import GameResult
 
 
 class COLORS(Enum):

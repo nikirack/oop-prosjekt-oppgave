@@ -1,7 +1,7 @@
-from player import Player, PlayerDict
-from games.shared.base import CasinoGame, GameResult
-from storage import PlayerStorage
-from ui import clear, Menu, COLORS, fmt_credits, ask_int, info, print_result, titlecard, blank
+from casino.player import Player, PlayerDict
+from casino.games.shared.base import CasinoGame, GameResult
+from casino.storage import PlayerStorage
+from casino.ui import clear, Menu, COLORS, fmt_credits, ask_int, info, print_result, titlecard, blank
 
 
 def _load_players(storage: PlayerStorage) -> Player:
@@ -160,11 +160,3 @@ class Casino:
                     self.select_game()
                 case _:
                     pass
-                    
-
-# if __name__ == "__main__":
-#     from games import Dice
-#     play= Player("na")
-#     ca = Casino(play,[Dice(6)])
-
-#     ca.run()

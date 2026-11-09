@@ -1,9 +1,9 @@
-from games.shared.base import CasinoGame, GameResult
+from casino.games.shared.base import CasinoGame, GameResult
 
 import random
 from enum import Enum
 
-from ui import ask_int, info, Menu
+from casino.ui import ask_int, info, Menu
 
 class RouletteColor(Enum):
     Red = "Red"

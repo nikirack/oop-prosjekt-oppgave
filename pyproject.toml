@@ -9,12 +9,8 @@ dependencies = [
 ]
 
 [project.scripts]
-casino = "main:main"
+casino = "casino.main:main"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-only-include = ["src"]
-sources = ["src"]

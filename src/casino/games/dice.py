@@ -1,8 +1,8 @@
 import random
 
-from games.shared.base import CasinoGame, GameResult
+from casino.games.shared.base import CasinoGame, GameResult
 
-from ui import ask_int
+from casino.ui import ask_int
 
 class Dice(CasinoGame):
     def __init__(self, sides:int) -> None:

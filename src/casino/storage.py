@@ -1,9 +1,9 @@
-from player import PlayerDict
+from casino.player import PlayerDict
 
 import json
 from pathlib import Path
 
-from ui import info
+from casino.ui import info
 
 
 class PlayerStorage:

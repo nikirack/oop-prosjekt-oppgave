@@ -1,7 +1,7 @@
-from games import Dice, Roulette
-from player import Player
-from casino import Casino, select_player
-from storage import PlayerStorage
+from casino.app import Casino, select_player
+from casino.games import Dice, Roulette
+from casino.player import Player
+from casino.storage import PlayerStorage
 
 def main() -> None:
 

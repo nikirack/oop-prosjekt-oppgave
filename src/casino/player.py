@@ -2,7 +2,7 @@ from typing import TypedDict
 
 import uuid
 
-from ui import show_player_balance
+from casino.ui import show_player_balance
 
 class PlayerDict(TypedDict):
     name: str
