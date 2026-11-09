@@ -1,5 +1,6 @@
 import subprocess, platform
 from typing import TYPE_CHECKING, Optional
+from enum import Enum
 
 from rich.console import Console
 from rich.prompt import Prompt, IntPrompt
@@ -13,13 +14,13 @@ if TYPE_CHECKING:
     from games.shared.base import GameResult
 
 
-COLORS: dict[str, str] = {
-    "accent": "gold1",
-    "win": "bold green",
-    "lose": "bold red",
-    "info": "cyan",
-    "muted": "grey58",
-}
+class COLORS(Enum):
+    accent = "gold1"
+    win = "bold green"
+    lose = "bold red"
+    info = "cyan"
+    muted = "grey58"
+
 
 
 console = Console()
@@ -38,20 +39,20 @@ def fmt_credits(amount: int) -> str:
     return f"{amount:,} credits"
 
 def show_player_balance(player: Player) -> None:
-    console.print(f"Your credits: [{COLORS['accent']}]{fmt_credits(player.balance)}[/]")
+    console.print(f"Your credits: [{COLORS.accent.value}]{fmt_credits(player.balance)}[/]")
 
 def win(message: str) -> None:
-    console.print(f"[{COLORS['win']}]{message}[/]")
+    console.print(f"[{COLORS.win.value}]{message}[/]")
 
 def lose(message: str) -> None:
-    console.print(f"[{COLORS['lose']}]{message}[/]")
+    console.print(f"[{COLORS.lose.value}]{message}[/]")
 
 def info(message: str) -> None:
-    console.print(f"[{COLORS['info']}]{message}[/]")
+    console.print(f"[{COLORS.info.value}]{message}[/]")
 
-def ask_int(prompt: str, choices: Optional[list[str]] = None) -> int:
+def ask_int(prompt: str, choices: Optional[list[str]] = None, show_choices: bool = True) -> int:
     if choices:
-        return IntPrompt.ask(prompt, choices=choices)
+        return IntPrompt.ask(prompt, choices=choices, show_choices=show_choices)
     return IntPrompt.ask(prompt)
 
 def ask_choice(prompt: str, choices: list[str], show_choices: bool = True) -> str:
@@ -87,3 +88,19 @@ class Menu:
             console.print(f"0. {self.footer}")
 
         return ask_choice("", alternatives, show_choices=False)
+    
+    def ask_return_name(self) -> str:
+        console.print(Text(self.title.upper(), style="bold"))
+        blank()
+
+        alternatives: list[str] = []
+
+        for number, option in self.options.items():
+            console.print(f"{number}. {option}")
+            alternatives.append(str(number))
+
+        if self.footer:
+            alternatives.append("0")
+            console.print(f"0. {self.footer}")
+
+        return self.options[ask_int("", alternatives, show_choices=False)]

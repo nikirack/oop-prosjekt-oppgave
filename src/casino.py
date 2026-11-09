@@ -18,7 +18,7 @@ def _load_players(storage: PlayerStorage) -> Player:
         player: Player = Player.from_dict(uuid, player_dict)
 
         players_numbered[str(i)] = player
-        alternatives[i] = f"{player.name} [{COLORS['muted']}]{fmt_credits(player.balance)}[/]"
+        alternatives[i] = f"{player.name} [{COLORS.muted.value}]{fmt_credits(player.balance)}[/]"
 
     menu = Menu(
         title="Select a player to use",
