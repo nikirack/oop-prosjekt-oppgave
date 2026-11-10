@@ -3,7 +3,7 @@ from casino.games.shared.base import CasinoGame, GameResult
 from casino.storage import PlayerStorage
 from casino.ui import clear, Menu, COLORS, fmt_credits, ask_int, info, print_result, titlecard, blank
 
-
+# En funktion for å hente spillerene fra en fil definert i "storage" variabelen, lager en meny der man kan velge hvilke spiller du vil velge, og den returner spilleren
 def _load_players(storage: PlayerStorage) -> Player:
 
     clear()
@@ -29,7 +29,7 @@ def _load_players(storage: PlayerStorage) -> Player:
 
     return players_numbered[choice]
 
-
+# En start funktion der man velger spiller (enten ny, eller eksisterende (hvis det eksisterer)), bruker funktionen _load_players for å velge eksisterende spiller
 def select_player(storage: PlayerStorage) -> Player:
     clear()
 
@@ -53,7 +53,7 @@ def select_player(storage: PlayerStorage) -> Player:
         case _:
             raise ValueError(f"Unexpected choice: {choice}") 
 
-
+# Selve klassen for hele casinoen, har storagen (for å lagre), spilleren og en liste av spillene som finnes
 class Casino:
     def __init__(self, storage: PlayerStorage, player: Player, games: list[CasinoGame]) -> None:
         self.storage: PlayerStorage = storage
@@ -65,7 +65,7 @@ class Casino:
             self.games_numbered[i] = game
 
 
-
+    # Kjører spillets .play() funktion, dette gjør den etter den har fått bet og akseptert det, til slutt får den resultatet fra spillet og endrer spillerens "ballance" basert på det
     def play_game(self, game: CasinoGame) -> None:
         clear()
 
@@ -101,7 +101,7 @@ class Casino:
         self.storage.update_and_save(self.player.to_dict())
         input("Press enter to continue")
 
-
+    # Her velger man et spill og bruker casinoen sin play_game() funksjon (den over)
     def select_game(self) -> None:
         clear()
 
@@ -130,7 +130,7 @@ class Casino:
         self.play_game(game)
 
             
-
+    # Hovedmetoden til klassen, denne starter loopen som er selve casinoen
     def run(self) -> None:
         while True:
             clear()
@@ -152,7 +152,6 @@ class Casino:
 
             match choice:
                 case "0":
-                    info("Bye")
                     clear()
                     self.storage.update_and_save(self.player.to_dict())
                     return

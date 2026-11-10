@@ -2,13 +2,20 @@ from casino.games.shared.base import CasinoGame, GameResult
 
 import random
 from enum import Enum
+from dataclasses import dataclass
 
-from casino.ui import ask_int, info, Menu
+from casino.ui import ask_int, info, Menu, fmt_credits
 
 class RouletteColor(Enum):
     Red = "Red"
     Black = "Black"
     Green = "Green"
+
+# Dataklasse for ballen, lettere en å måtte skrive ball[0] og ball[1] siden den var en tuple før
+@dataclass
+class Ball():
+    number: int
+    color: RouletteColor
 
 class Roulette(CasinoGame):
     # Faktiske rulette tall, https://www.wikihow.com/Play-Roulette
@@ -19,16 +26,16 @@ class Roulette(CasinoGame):
     ALL_NUMBERS: list[int] = sorted([*RED_NUMBERS, *BLACK_NUMBERS, *GREEN_NUMBERS])
 
     BET_TYPES: dict[int, str] = {
-        1:"Number",
-        2:"Red",
-        3:"Black",
-        4:"Even",
-        5:"Odd",
-        6:"1-18",
-        7:"19-36",
-        8:"1st dozen",
-        9:"2nd dozen",
-        10:"3rd dozen"
+        1: "Number (36x payout)",
+        2: "Red (2x payout)",
+        3: "Black (2x payout)",
+        4: "Even (2x payout)",
+        5: "Odd (2x payout)",
+        6: "1-18 (2x payout)",
+        7: "19-36 (2x payout)",
+        8: "1st dozen (3x payout)",
+        9: "2nd dozen (3x payout)",
+        10: "3rd dozen (3x payout)"
     }
 
     MULTIPLIERS: dict[str, int] = {
@@ -42,19 +49,22 @@ class Roulette(CasinoGame):
     def __init__(self) -> None:
         super().__init__("Roulette", 10)
 
-    def _spin(self) -> tuple[int, RouletteColor]:
+    def _spin(self) -> Ball:
         number: int = random.choice(self.ALL_NUMBERS)
 
-        if number in self.GREEN_NUMBERS:
-            return (number, RouletteColor.Green)
-        elif number in self.RED_NUMBERS:
-            return (number, RouletteColor.Red)
-        else:
-            return (number, RouletteColor.Black)
+        return Ball(
+            number=number,
+            color = (
+                RouletteColor.Red if number in self.RED_NUMBERS
+                else RouletteColor.Black if number in self.BLACK_NUMBERS
+                else RouletteColor.Green
+            )
+        )
         
-
-    def _wins(self, choice: str, pick: int, ball: tuple[int, RouletteColor]) -> bool:
-        number, color = ball
+    # metode for å finne ut om du vinner eller ikke basert på valget ditt og ballen
+    def _wins(self, choice: str, pick: int, ball: Ball) -> bool:
+        number: int = ball.number
+        color: RouletteColor = ball.color
 
         if number == 0:
             return choice == "Number" and pick == 0
@@ -74,12 +84,12 @@ class Roulette(CasinoGame):
                 return 19 <= number <= 36
             case "1st dozen":
                 return 1 <= number <= 12
-            case "2st dozen":
+            case "2nd dozen":
                 return 13 <= number <= 24
-            case "3st dozen":
+            case "3rd dozen":
                 return 25 <= number <= 36
             case _:
-                raise ValueError(f"Unexpected choice: {choice}") 
+                raise ValueError(f"Unexpected choice: '{choice}'") 
 
     def play(self, bet: int) -> GameResult:
         super()._show_title(bet)
@@ -89,17 +99,17 @@ class Roulette(CasinoGame):
             options=self.BET_TYPES
         )
 
-        choice: str = menu.ask_return_name()
+        choice: str = menu.ask_return_name().split("(")[0].strip()
 
         pick: int = 0
         if choice == "Number":
             pick = ask_int("Pick a number (0-36)", choices=[str(i) for i in self.ALL_NUMBERS])
 
-        ball: tuple[int, RouletteColor] = self._spin()
-        info(f"The ball lands on {ball[0]} {ball[1].value}.")
+        ball: Ball = self._spin()
+        info(f"The ball lands on {ball.number} {ball.color.value}.")
 
         if self._wins(choice, pick, ball):
             payout: int = bet * self.MULTIPLIERS[choice]
-            return GameResult(True, payout, f"{choice} wins! You won {payout} credits!")
+            return GameResult(True, payout, f"{choice} wins! You won {fmt_credits(payout)}!")
 
         return GameResult(False, 0, f"{choice} loses. You lost.")

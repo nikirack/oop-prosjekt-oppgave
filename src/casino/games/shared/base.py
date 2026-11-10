@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from casino.ui import titlecard, info
 
+# En dataklasse som alle "CasinoGame" returner ved funksjonen play()
 @dataclass
 class GameResult:
     win: bool
@@ -9,6 +10,7 @@ class GameResult:
     message: str
 
 
+# Superklasse for alle casino spillene 
 class CasinoGame:
     def __init__(self, name: str, min_bet: int = 10) -> None:
         self.name: str = name

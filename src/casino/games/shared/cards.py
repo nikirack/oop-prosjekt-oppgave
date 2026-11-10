@@ -1,5 +1,11 @@
 import random
 
+"""
+Klasser for kortstokk og kort
+Planlagt å bruke i blackjack og andre casino spill, men jeg har ikke laget blackjack og har ikke laget noen spill som krever det
+så til nå er denne filen ubrukelig
+"""
+
 class Card:
     def __init__(self, rank: str, suit: str) -> None:
         self.rank: str = rank
