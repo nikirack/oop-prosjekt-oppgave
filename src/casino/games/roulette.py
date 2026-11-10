@@ -1,4 +1,4 @@
-from casino.games.shared.base import CasinoGame, GameResult
+from casino.games.shared.base import CasinoGame, GameResult, GameOutcome
 
 import random
 from enum import Enum
@@ -110,6 +110,6 @@ class Roulette(CasinoGame):
 
         if self._wins(choice, pick, ball):
             payout: int = bet * self.MULTIPLIERS[choice]
-            return GameResult(True, payout, f"{choice} wins! You won {fmt_credits(payout)}!")
+            return GameResult(GameOutcome.WIN, payout, f"{choice} wins! You won {fmt_credits(payout)}!")
 
-        return GameResult(False, 0, f"{choice} loses. You lost.")
+        return GameResult(GameOutcome.LOSS, 0, f"{choice} loses. You lost.")

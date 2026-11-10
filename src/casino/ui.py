@@ -23,6 +23,7 @@ class COLORS(Enum):
     accent = "gold1"
     win = "bold green"
     lose = "bold red"
+    draw = "bold yellow"
     info = "cyan"
     muted = "grey58"
 
@@ -49,6 +50,9 @@ def win(message: str) -> None:
 def lose(message: str) -> None:
     console.print(f"[{COLORS.lose.value}]{message}[/]")
 
+def draw(message: str) -> None:
+    console.print(f"[{COLORS.draw.value}]{message}[/]")
+
 def info(message: str) -> None:
     console.print(f"[{COLORS.info.value}]{message}[/]")
 
@@ -61,10 +65,12 @@ def ask_choice(prompt: str, choices: list[str], show_choices: bool = True) -> st
     return Prompt.ask(prompt, choices=choices, show_choices=show_choices)
 
 def print_result(result: GameResult) -> None:
-    if result.win:
+    if result.outcome.value == "win":
         win(result.message)
-    else:
+    elif result.outcome.value == "loss":
         lose(result.message)
+    else:
+        draw(result.message)
 
 def blank() -> None:
     console.print()

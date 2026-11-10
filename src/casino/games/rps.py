@@ -1,6 +1,6 @@
 import random
 
-from casino.games.shared.base import CasinoGame, GameResult
+from casino.games.shared.base import CasinoGame, GameResult, GameOutcome
 
 from casino.ui import Menu, info
 
@@ -40,8 +40,8 @@ class Rps(CasinoGame):
         info(f"You chose {user_choice}, the bot chose {bot_choice}")
 
         if self.WINNING[user_choice] == bot_choice:
-            return GameResult(True, bet * 2, f"You won {bet*2} credits!")
+            return GameResult(GameOutcome.WIN, bet * 2, f"You won {bet*2} credits!")
         elif user_choice == bot_choice:
-            return GameResult(False, bet, f"Tie, your credits got returned!")
+            return GameResult(GameOutcome.DRAW, bet, f"Tie, your credits got returned!")
         else:
-            return GameResult(False, 0, "You lost.")
+            return GameResult(GameOutcome.LOSS, 0, "You lost.")

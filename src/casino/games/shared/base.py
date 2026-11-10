@@ -1,11 +1,18 @@
 from dataclasses import dataclass
+from enum import Enum
 
 from casino.ui import titlecard, info
+
+# Enum for å tillate uavgjort
+class GameOutcome(Enum):
+    WIN = "win"
+    LOSS = "loss"
+    DRAW = "draw"
 
 # En dataklasse som alle "CasinoGame" returner ved funksjonen play()
 @dataclass
 class GameResult:
-    win: bool
+    outcome: GameOutcome
     payout: int
     message: str
 
