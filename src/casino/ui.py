@@ -1,4 +1,3 @@
-import subprocess, platform
 from typing import TYPE_CHECKING, Optional
 from enum import Enum
 
@@ -8,11 +7,17 @@ from rich.panel import Panel
 from rich.align import Align
 from rich.text import Text
 
+import pyfiglet
 
 if TYPE_CHECKING:
     from casino.player import Player
     from casino.games.shared.base import GameResult
 
+
+"""
+Dette er en fil for alt UI relatert, ingen andre filer snakker dirrekte med rich, de alle gjør det gjennom denne filen 
+Denne filen er ganske AI generert
+"""
 
 class COLORS(Enum):
     accent = "gold1"
@@ -26,14 +31,11 @@ class COLORS(Enum):
 console = Console()
 
 def clear() -> None:
-    subprocess.run(
-        ["cls"] if platform.system() == "Windows" else ["clear"],
-        check=False,
-        shell=True
-    )
+    # Clearing med ANSI escape koder
+    print("\033[H\033[J", end="")
 
 def titlecard(text: str) -> None:
-    console.print(Panel(Align.center(text.upper())))
+    console.print(Panel(Align.center(pyfiglet.figlet_format(text))))
 
 def fmt_credits(amount: int) -> str:
     return f"{amount:,} credits"
@@ -67,6 +69,7 @@ def print_result(result: GameResult) -> None:
 def blank() -> None:
     console.print()
 
+# En klasse for å lage menyene jeg bruker over hele prosjektet
 class Menu:
     def __init__(self, title: str, options: dict[int, str], footer: Optional[str] = None) -> None:
         self.title: str = title
@@ -88,19 +91,8 @@ class Menu:
             console.print(f"0. {self.footer}")
 
         return ask_choice("", alternatives, show_choices=False)
-    
+
+
+
     def ask_return_name(self) -> str:
-        console.print(Text(self.title.upper(), style="bold"))
-        blank()
-
-        alternatives: list[str] = []
-
-        for number, option in self.options.items():
-            console.print(f"{number}. {option}")
-            alternatives.append(str(number))
-
-        if self.footer:
-            alternatives.append("0")
-            console.print(f"0. {self.footer}")
-
-        return self.options[ask_int("", alternatives, show_choices=False)]
+        return self.options[int(self.ask())]
