@@ -60,13 +60,13 @@ class Casino:
         self.player: Player = player
         self.games: list[CasinoGame] = games
 
-        self.games_numbered: dict[int, CasinoGame] = {}
+        self._games_numbered: dict[int, CasinoGame] = {}
         for i, game in enumerate(self.games, 1):
-            self.games_numbered[i] = game
+            self._games_numbered[i] = game
 
 
     # Kjører spillets .play() funktion, dette gjør den etter den har fått bet og akseptert det, til slutt får den resultatet fra spillet og endrer spillerens "ballance" basert på det
-    def play_game(self, game: CasinoGame) -> None:
+    def _play_game(self, game: CasinoGame) -> None:
         clear()
 
         self.player.show_balance()
@@ -102,7 +102,7 @@ class Casino:
         input("Press enter to continue")
 
     # Her velger man et spill og bruker casinoen sin play_game() funksjon (den over)
-    def select_game(self) -> None:
+    def _select_game(self) -> None:
         clear()
 
         titlecard("GAMES")
@@ -110,7 +110,7 @@ class Casino:
 
         alternatives: dict[int, str] = {}
 
-        for num, game in self.games_numbered.items():
+        for num, game in self._games_numbered.items():
             alternatives[num] = game.name
             
 
@@ -125,9 +125,9 @@ class Casino:
         if choice == "0":
             return
 
-        game: CasinoGame = self.games_numbered[int(choice)]
+        game: CasinoGame = self._games_numbered[int(choice)]
 
-        self.play_game(game)
+        self._play_game(game)
 
             
     # Hovedmetoden til klassen, denne starter loopen som er selve casinoen
@@ -156,6 +156,6 @@ class Casino:
                     self.storage.update_and_save(self.player.to_dict())
                     return
                 case "1":
-                    self.select_game()
+                    self._select_game()
                 case _:
                     pass
