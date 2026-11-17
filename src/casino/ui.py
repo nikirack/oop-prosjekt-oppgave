@@ -81,8 +81,8 @@ class Menu:
         self.options: dict[int, str] = options
         self.footer: str | None = footer
 
-    def ask(self) -> str:
-        """Returns the key from the options dict (as a string) """
+    def ask(self) -> int:
+        """Returns the key from the options dict (as an int)"""
         console.print(Text(self.title.upper(), style="bold"))
         blank()
 
@@ -96,10 +96,10 @@ class Menu:
             alternatives.append("0")
             console.print(f"0. {self.footer}")
 
-        return ask_choice("", alternatives, show_choices=False)
+        return ask_int("", choices=alternatives, show_choices=False)
 
 
 
     def ask_option(self) -> str:
         """Returns the value from the options dict, not the key"""
-        return self.options[int(self.ask())]
+        return self.options[self.ask()]

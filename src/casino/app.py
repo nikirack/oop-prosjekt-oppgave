@@ -20,7 +20,7 @@ def _load_players(storage: PlayerStorage) -> Player:
     clear()
 
     players: dict[str, PlayerDict] = storage.data
-    players_numbered: dict[str, Player] = {}
+    players_numbered: dict[int, Player] = {}
 
     alternatives: dict[int, str] = {}
 
@@ -28,7 +28,7 @@ def _load_players(storage: PlayerStorage) -> Player:
     for i, [uuid, player_dict] in enumerate(players.items(), 1):
         player: Player = Player.from_dict(uuid, player_dict)
 
-        players_numbered[str(i)] = player
+        players_numbered[i] = player
         alternatives[i] = f"{player.name} [{Color.MUTED.value}]{fmt_credits(player.balance)}[/]"
 
     menu = Menu(
@@ -36,7 +36,7 @@ def _load_players(storage: PlayerStorage) -> Player:
         options=alternatives
     )
      
-    choice: str = menu.ask()
+    choice: int = menu.ask()
 
     return players_numbered[choice]
 
@@ -54,12 +54,12 @@ def select_player(storage: PlayerStorage) -> Player:
         options=alternatives,
     )
 
-    choice: str = menu.ask()
+    choice: int = menu.ask()
 
     match choice:
-        case "1":
+        case 1:
             return Player(name = input("Name: "))
-        case "2":
+        case 2:
             return _load_players(storage)
         case _:
             raise ValueError(f"Unexpected choice: {choice}") 
@@ -131,12 +131,12 @@ class Casino:
         )
 
         
-        choice: str = menu.ask()
+        choice: int = menu.ask()
 
-        if choice == "0":
+        if choice == 0:
             return
 
-        game: CasinoGame = self._games_numbered[int(choice)]
+        game: CasinoGame = self._games_numbered[choice]
 
         self._play_game(game)
 
@@ -159,14 +159,14 @@ class Casino:
                 footer="Exit"
             )
 
-            choice: str = menu.ask()
+            choice: int = menu.ask()
 
             match choice:
-                case "0":
+                case 0:
                     clear()
                     self.storage.update_and_save(self.player.to_dict())
                     return
-                case "1":
+                case 1:
                     self._select_game()
                 case _:
                     pass
