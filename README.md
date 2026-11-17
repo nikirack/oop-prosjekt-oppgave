@@ -25,6 +25,10 @@ Når programmet starter, leser den json filen `data/player.json` og basert på o
 
 Etter det kjører den casino classen fra [app.py](/src/casino/app.py) og det er den klassen som hånterer hva som skjer i spillet.
 
+### Klassediagram
+
+![Klassediagram](./assets/klassediagram.drawio.png)
+
 ## Kilder
 
 Jeg har ikke tatt kode fra andre kilder, det nermeste jeg kommer er å bruke kilder for å prøve å gjøre roulette mer realistisk, og dokumentasjon for python og biblioteker (og [ai](#ai-bruk))
