@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 
@@ -19,7 +20,7 @@ class GameResult:
 
 
 # Superklasse for alle casino spillene 
-class CasinoGame:
+class CasinoGame(ABC):
     def __init__(self, name: str, min_bet: int = 10) -> None:
         self.name: str = name
         self.min_bet: int = min_bet
@@ -27,6 +28,7 @@ class CasinoGame:
     def _show_title(self, bet: int) -> None:
         titlecard(self.name)
         info(f"Current bet is {bet}")
-
+    
+    @abstractmethod
     def play(self, bet: int) -> GameResult:
-        raise NotImplementedError
+        "Selve funksjonen der casino spillet skal eksistere"
