@@ -1,8 +1,8 @@
+import uuid
 from typing import TypedDict
 
-import uuid
-
 from casino.ui import show_player_balance
+
 
 # En TypedDict som korelerer med hvordan dataen er strukturert i json filen
 class PlayerDict(TypedDict):

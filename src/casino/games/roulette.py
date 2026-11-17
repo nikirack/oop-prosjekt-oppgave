@@ -1,31 +1,32 @@
-from casino.games.shared.base import CasinoGame, GameResult, GameOutcome
-
 import random
-from enum import Enum
 from dataclasses import dataclass
+from enum import Enum
+from typing import ClassVar
 
-from casino.ui import ask_int, info, Menu, fmt_credits
+from casino.games.shared.base import CasinoGame, GameOutcome, GameResult
+from casino.ui import Menu, ask_int, fmt_credits, info
+
 
 class RouletteColor(Enum):
-    Red = "Red"
-    Black = "Black"
-    Green = "Green"
+    RED = "Red"
+    BLACK = "Black"
+    GREEN = "Green"
 
 # Dataklasse for ballen, lettere en å måtte skrive ball[0] og ball[1] siden den var en tuple før
 @dataclass
-class Ball():
+class Ball:
     number: int
     color: RouletteColor
 
 class Roulette(CasinoGame):
     # Faktiske rulette tall, https://www.wikihow.com/Play-Roulette
-    RED_NUMBERS: list[int] = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
-    BLACK_NUMBERS: list[int] = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35]
-    GREEN_NUMBERS: list[int] = [0]
+    RED_NUMBERS: ClassVar[list[int]] = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
+    BLACK_NUMBERS: ClassVar[list[int]] = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35]
+    GREEN_NUMBERS: ClassVar[list[int]] = [0]
 
-    ALL_NUMBERS: list[int] = sorted([*RED_NUMBERS, *BLACK_NUMBERS, *GREEN_NUMBERS])
+    ALL_NUMBERS: ClassVar[list[int]] = sorted([*RED_NUMBERS, *BLACK_NUMBERS, *GREEN_NUMBERS])
 
-    BET_TYPES: dict[int, str] = {
+    BET_TYPES: ClassVar[dict[int, str]] = {
         1: "Number (36x payout)",
         2: "Red (2x payout)",
         3: "Black (2x payout)",
@@ -38,7 +39,7 @@ class Roulette(CasinoGame):
         10: "3rd dozen (3x payout)"
     }
 
-    MULTIPLIERS: dict[str, int] = {
+    MULTIPLIERS: ClassVar[dict[str, int]] = {
         "Number": 36,
         "Red": 2, "Black": 2,
         "Even": 2, "Odd": 2,
@@ -55,9 +56,9 @@ class Roulette(CasinoGame):
         return Ball(
             number=number,
             color = (
-                RouletteColor.Red if number in self.RED_NUMBERS
-                else RouletteColor.Black if number in self.BLACK_NUMBERS
-                else RouletteColor.Green
+                RouletteColor.RED if number in self.RED_NUMBERS
+                else RouletteColor.BLACK if number in self.BLACK_NUMBERS
+                else RouletteColor.GREEN
             )
         )
         
@@ -99,7 +100,7 @@ class Roulette(CasinoGame):
             options=self.BET_TYPES
         )
 
-        choice: str = menu.ask_return_name().split("(")[0].strip()
+        choice: str = menu.ask_option().split("(")[0].strip()
 
         pick: int = 0
         if choice == "Number":

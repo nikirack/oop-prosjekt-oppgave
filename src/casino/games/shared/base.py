@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from casino.ui import titlecard, info
+from casino.ui import info, titlecard
+
 
 # Enum for å tillate uavgjort
 class GameOutcome(Enum):

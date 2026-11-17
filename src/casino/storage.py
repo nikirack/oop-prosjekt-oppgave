@@ -1,9 +1,9 @@
-from casino.player import PlayerDict
-
 import json
 from pathlib import Path
 
+from casino.player import PlayerDict
 from casino.ui import info
+
 
 # En klasse for å "snakke" med en json fil
 class PlayerStorage:

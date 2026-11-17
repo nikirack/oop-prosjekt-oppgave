@@ -1,17 +1,16 @@
-from typing import TYPE_CHECKING, Optional
 from enum import Enum
-
-from rich.console import Console
-from rich.prompt import Prompt, IntPrompt
-from rich.panel import Panel
-from rich.align import Align
-from rich.text import Text
+from typing import TYPE_CHECKING
 
 import pyfiglet
+from rich.align import Align
+from rich.console import Console
+from rich.panel import Panel
+from rich.prompt import IntPrompt, Prompt
+from rich.text import Text
 
 if TYPE_CHECKING:
-    from casino.player import Player
     from casino.games.shared.base import GameResult
+    from casino.player import Player
 
 
 """
@@ -19,13 +18,13 @@ Dette er en fil for alt UI relatert, ingen andre filer snakker dirrekte med rich
 Denne filen er ganske AI generert
 """
 
-class COLORS(Enum):
-    accent = "gold1"
-    win = "bold green"
-    lose = "bold red"
-    draw = "bold yellow"
-    info = "cyan"
-    muted = "grey58"
+class Color(Enum):
+    ACCENT = "gold1"
+    WIN = "bold green"
+    LOSE = "bold red"
+    DRAW = "bold yellow"
+    INFO = "cyan"
+    MUTED = "grey58"
 
 
 
@@ -42,21 +41,21 @@ def fmt_credits(amount: int) -> str:
     return f"{amount:,} credits"
 
 def show_player_balance(player: Player) -> None:
-    console.print(f"Your credits: [{COLORS.accent.value}]{fmt_credits(player.balance)}[/]")
+    console.print(f"Your credits: [{Color.ACCENT.value}]{fmt_credits(player.balance)}[/]")
 
 def win(message: str) -> None:
-    console.print(f"[{COLORS.win.value}]{message}[/]")
+    console.print(f"[{Color.WIN.value}]{message}[/]")
 
 def lose(message: str) -> None:
-    console.print(f"[{COLORS.lose.value}]{message}[/]")
+    console.print(f"[{Color.LOSE.value}]{message}[/]")
 
 def draw(message: str) -> None:
-    console.print(f"[{COLORS.draw.value}]{message}[/]")
+    console.print(f"[{Color.DRAW.value}]{message}[/]")
 
 def info(message: str) -> None:
-    console.print(f"[{COLORS.info.value}]{message}[/]")
+    console.print(f"[{Color.INFO.value}]{message}[/]")
 
-def ask_int(prompt: str, choices: Optional[list[str]] = None, show_choices: bool = True) -> int:
+def ask_int(prompt: str, choices: list[str] | None = None, show_choices: bool = True) -> int:
     if choices:
         return IntPrompt.ask(prompt, choices=choices, show_choices=show_choices)
     return IntPrompt.ask(prompt)
@@ -77,12 +76,13 @@ def blank() -> None:
 
 # En klasse for å lage menyene jeg bruker over hele prosjektet
 class Menu:
-    def __init__(self, title: str, options: dict[int, str], footer: Optional[str] = None) -> None:
+    def __init__(self, title: str, options: dict[int, str], footer: str | None = None) -> None:
         self.title: str = title
         self.options: dict[int, str] = options
-        self.footer: Optional[str] = footer
+        self.footer: str | None = footer
 
     def ask(self) -> str:
+        """Returns the key from the options dict (as a string) """
         console.print(Text(self.title.upper(), style="bold"))
         blank()
 
@@ -100,5 +100,6 @@ class Menu:
 
 
 
-    def ask_return_name(self) -> str:
+    def ask_option(self) -> str:
+        """Returns the value from the options dict, not the key"""
         return self.options[int(self.ask())]

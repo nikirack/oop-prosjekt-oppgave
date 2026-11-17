@@ -1,10 +1,10 @@
+import time
+
 from casino.app import Casino, select_player
-from casino.games import Rps, Roulette
+from casino.games import RPS, Roulette
 from casino.player import Player
 from casino.storage import PlayerStorage
-from casino.ui import info, clear
-
-import time
+from casino.ui import clear, info
 
 """
 Selve filen som kjøres
@@ -23,7 +23,7 @@ def main() -> None:
         storage=storage,
         player=player,
         games=[
-            Rps(),
+            RPS(),
             Roulette(),
         ]
     )

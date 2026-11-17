@@ -1,7 +1,18 @@
-from casino.player import Player, PlayerDict
 from casino.games.shared.base import CasinoGame, GameResult
+from casino.player import Player, PlayerDict
 from casino.storage import PlayerStorage
-from casino.ui import clear, Menu, COLORS, fmt_credits, ask_int, info, print_result, titlecard, blank
+from casino.ui import (
+    Color,
+    Menu,
+    ask_int,
+    blank,
+    clear,
+    fmt_credits,
+    info,
+    print_result,
+    titlecard,
+)
+
 
 # En funktion for å hente spillerene fra en fil definert i "storage" variabelen, lager en meny der man kan velge hvilke spiller du vil velge, og den returner spilleren
 def _load_players(storage: PlayerStorage) -> Player:
@@ -18,7 +29,7 @@ def _load_players(storage: PlayerStorage) -> Player:
         player: Player = Player.from_dict(uuid, player_dict)
 
         players_numbered[str(i)] = player
-        alternatives[i] = f"{player.name} [{COLORS.muted.value}]{fmt_credits(player.balance)}[/]"
+        alternatives[i] = f"{player.name} [{Color.MUTED.value}]{fmt_credits(player.balance)}[/]"
 
     menu = Menu(
         title="Select a player to use",

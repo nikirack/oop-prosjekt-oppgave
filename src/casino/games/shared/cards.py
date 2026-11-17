@@ -1,4 +1,5 @@
 import random
+from typing import ClassVar
 
 """
 Klasser for kortstokk og kort
@@ -15,8 +16,8 @@ class Card:
         return f"{self.rank} of {self.suit}"
 
 class Deck:
-    SUITS: list[str] = ["Hearts", "Diamonds", "Clubs", "Spades"]
-    RANKS: list[str] = [
+    SUITS: ClassVar[list[str]] = ["Hearts", "Diamonds", "Clubs", "Spades"]
+    RANKS: ClassVar[list[str]] = [
         "2", "3", "4", "5", "6", "7", "8", "9", "10",
         "Jack", "Queen", "King", "Ace"
     ]

@@ -1,7 +1,7 @@
 import random
+from typing import ClassVar
 
-from casino.games.shared.base import CasinoGame, GameResult, GameOutcome
-
+from casino.games.shared.base import CasinoGame, GameOutcome, GameResult
 from casino.ui import Menu, info
 
 """
@@ -9,23 +9,18 @@ Stein saks papir
 Lagt til for å ha et mindre komplisert spill en roulette
 """
 
-class Rps(CasinoGame):
-    WINNING: dict[str,str] = {
+class RPS(CasinoGame):
+    BEATS: ClassVar[dict[str, str]] = {
         "Rock": "Scissor",
         "Paper": "Rock",
         "Scissor": "Paper",
     }
 
-    ALTERNATIVES: dict[int, str] = {
+    CHOICES: ClassVar[dict[int, str]] = {
         1:"Rock",
         2:"Paper",
         3:"Scissor",
     }
-
-    MENU = Menu(
-            title="Rock, Paper, Scissor",
-            options=ALTERNATIVES
-        )
 
     def __init__(self) -> None:
         super().__init__("RPS", 10)
@@ -33,15 +28,19 @@ class Rps(CasinoGame):
     def play(self, bet: int) -> GameResult:
         super()._show_title(bet)
 
-        user_choice: str = self.MENU.ask_return_name()
+        menu: Menu = Menu(
+            title="Rock, Paper, Scissor",
+            options=self.CHOICES
+        )
+        user_choice: str = menu.ask_option()
 
-        bot_choice: str = random.choice(list(self.ALTERNATIVES.values()))
+        bot_choice: str = random.choice(list(self.CHOICES.values()))
 
         info(f"You chose {user_choice}, the bot chose {bot_choice}")
 
-        if self.WINNING[user_choice] == bot_choice:
+        if self.BEATS[user_choice] == bot_choice:
             return GameResult(GameOutcome.WIN, bet * 2, f"You won {bet*2} credits!")
         elif user_choice == bot_choice:
-            return GameResult(GameOutcome.DRAW, bet, f"Tie, your credits got returned!")
+            return GameResult(GameOutcome.DRAW, bet, "Tie, your credits got returned!")
         else:
             return GameResult(GameOutcome.LOSS, 0, "You lost.")
