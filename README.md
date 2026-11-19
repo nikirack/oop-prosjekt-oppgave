@@ -1,9 +1,3 @@
-# oop-prosjekt-oppgave
-
-ting som mangler:
-- Klassediagram
-- README(litt)
-
 # CASINO
 
 Et casino spill laget i python med fokus på OOP
