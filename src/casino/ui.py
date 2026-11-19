@@ -11,7 +11,7 @@ from rich.text import Text
 from casino.games.shared.results import GameOutcome, GameResult
 
 if TYPE_CHECKING:
-    from casino.player import Player
+    from casino.player import Player, Statistics
 
 
 """
@@ -73,14 +73,17 @@ def print_result(result: GameResult) -> None:
         draw(result.message)
 
 def show_stats(player: Player) -> None:
+    stats: Statistics = player.stats
     console.print(
         Panel(
-            f"[{Color.WIN.value}]Wins: {player.stats['win']}[/]  "
-            f"[{Color.LOSE.value}]Losses: {player.stats['loss']}[/]  "
-            f"[{Color.DRAW.value}]Draws: {player.stats['draw']}[/]",
+            f"[{Color.WIN.value}]Wins: {stats['win']}[/]  "
+            f"[{Color.LOSE.value}]Losses: {stats['loss']}[/]  "
+            f"[{Color.DRAW.value}]Draws: {stats['draw']}[/]",
             title=f"{player.name}'s stats",
         )
     )
+    total_games: int = stats["win"]+stats["loss"]+stats["draw"]
+    console.print(f"Games played: {total_games}")
 
 def require_enter() -> None:
     blank()
