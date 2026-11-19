@@ -3,7 +3,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import ClassVar
 
-from casino.games.shared.base import CasinoGame, GameOutcome, GameResult
+from casino.games.shared.base import CasinoGame
+from casino.games.shared.results import GameOutcome, GameResult
 from casino.ui import Menu, ask_int, fmt_credits, info
 
 

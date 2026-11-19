@@ -1,4 +1,5 @@
-from casino.games.shared.base import CasinoGame, GameResult
+from casino.games.shared.base import CasinoGame
+from casino.games.shared.results import GameResult
 from casino.player import Player, PlayerDict
 from casino.storage import PlayerStorage
 from casino.ui import (
@@ -10,7 +11,9 @@ from casino.ui import (
     fmt_credits,
     info,
     print_result,
+    show_stats,
     titlecard,
+    require_enter
 )
 
 
@@ -105,12 +108,13 @@ class Casino:
 
         result: GameResult = game.play(bet)
         self.player.change_balance(result.payout)
+        self.player.update_stats(result.outcome)
 
         print_result(result)
         info(f"{self.player.name} now has {fmt_credits(self.player.balance)}.")
 
         self.storage.update_and_save(self.player.to_dict())
-        input("Press enter to continue")
+        require_enter()
 
     # Her velger man et spill og bruker casinoen sin play_game() funksjon (den over)
     def _select_game(self) -> None:
@@ -140,7 +144,15 @@ class Casino:
 
         self._play_game(game)
 
-            
+    def _statistics_page(self) -> None:
+        clear()
+        
+        titlecard("STATS")
+
+        show_stats(self.player)
+
+        require_enter()
+
     # Hovedmetoden til klassen, denne starter loopen som er selve casinoen
     def run(self) -> None:
         while True:
@@ -154,7 +166,8 @@ class Casino:
             menu = Menu(
                 title="Select an option",
                 options={
-                    1: "Play"
+                    1: "Play",
+                    2: "Stats",
                 },
                 footer="Exit"
             )
@@ -168,5 +181,7 @@ class Casino:
                     return
                 case 1:
                     self._select_game()
+                case 2:
+                    self._statistics_page()
                 case _:
                     pass

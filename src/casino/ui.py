@@ -8,8 +8,9 @@ from rich.panel import Panel
 from rich.prompt import IntPrompt, Prompt
 from rich.text import Text
 
+from casino.games.shared.results import GameOutcome, GameResult
+
 if TYPE_CHECKING:
-    from casino.games.shared.base import GameResult
     from casino.player import Player
 
 
@@ -64,12 +65,26 @@ def ask_choice(prompt: str, choices: list[str], show_choices: bool = True) -> st
     return Prompt.ask(prompt, choices=choices, show_choices=show_choices)
 
 def print_result(result: GameResult) -> None:
-    if result.outcome.value == "win":
+    if result.outcome == GameOutcome.WIN:
         win(result.message)
-    elif result.outcome.value == "loss":
+    elif result.outcome == GameOutcome.LOSS:
         lose(result.message)
     else:
         draw(result.message)
+
+def show_stats(player: Player) -> None:
+    console.print(
+        Panel(
+            f"[{Color.WIN.value}]Wins: {player.stats['win']}[/]  "
+            f"[{Color.LOSE.value}]Losses: {player.stats['loss']}[/]  "
+            f"[{Color.DRAW.value}]Draws: {player.stats['draw']}[/]",
+            title=f"{player.name}'s stats",
+        )
+    )
+
+def require_enter() -> None:
+    blank()
+    input("Rress enter to continue...")
 
 def blank() -> None:
     console.print()

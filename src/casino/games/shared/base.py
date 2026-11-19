@@ -1,22 +1,7 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from enum import Enum
 
+from casino.games.shared.results import GameResult
 from casino.ui import info, titlecard
-
-
-# Enum for å tillate uavgjort
-class GameOutcome(Enum):
-    WIN = "win"
-    LOSS = "loss"
-    DRAW = "draw"
-
-# En dataklasse som alle "CasinoGame" returner ved funksjonen play()
-@dataclass
-class GameResult:
-    outcome: GameOutcome
-    payout: int
-    message: str
 
 
 # Superklasse for alle casino spillene 
