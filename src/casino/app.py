@@ -11,9 +11,9 @@ from casino.ui import (
     fmt_credits,
     info,
     print_result,
+    require_enter,
     show_stats,
     titlecard,
-    require_enter
 )
 
 
