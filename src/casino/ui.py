@@ -87,7 +87,7 @@ def show_stats(player: Player) -> None:
 
 def require_enter() -> None:
     blank()
-    input("Rress enter to continue...")
+    input("Press enter to continue...")
 
 def blank() -> None:
     console.print()
