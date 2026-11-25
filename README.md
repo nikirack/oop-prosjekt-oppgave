@@ -34,10 +34,9 @@ Jeg har ikke tatt kode fra andre kilder, det nermeste jeg kommer er å bruke kil
 ### Verktøy
 
 Jeg har brukt ai som chatgpt og claude på nettet for å kunne lære meg og hjelpe meg med bibliotekene \
-Når jeg ville gjøre gjøre større endringer og ideer som krevde hele kodebasen, brukte jeg opencode (mer spesifikt, GLM 5.3 - Flash Free)
+Når jeg ville gjøre gjøre større endringer og ideer som krevde hele kodebasen, brukte jeg opencode (mer spesifikt, GLM 5.3 - Flash Free).
+Jeg har også brukt gpt 6 gjennom codex.
 
 ### Hva brukt for
 
 Jeg har brukt ai hovedsaklig for å komme med ideer og hjelpe meg med å jobbe med biblioteker som rich, en del av [ui.py](/src/casino/ui.py) er skrevet av ai. Jeg har også brukt ai til å lese gjennom koden, og finne feil som jeg selv fikset.
-
-## Logg
