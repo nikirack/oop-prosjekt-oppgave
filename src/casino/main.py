@@ -32,6 +32,7 @@ def main() -> None:
         casino.run()
     except KeyboardInterrupt:
         info("\nBye")
+    finally:
         storage.update_and_save(player.to_dict())
         time.sleep(1.5)
         clear()
